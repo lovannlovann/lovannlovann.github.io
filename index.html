@@ -21,7 +21,6 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -31,7 +30,6 @@
     overflow-x: hidden;
   }
 
-  /* NOISE TEXTURE */
   body::before {
     content: '';
     position: fixed;
@@ -45,15 +43,13 @@
   /* NAV */
   nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 3rem;
-    background: rgba(10, 10, 15, 0.8);
+    background: rgba(10, 10, 15, 0.85);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
   }
@@ -67,13 +63,14 @@
 
   .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
     list-style: none;
+    flex-wrap: wrap;
   }
 
   .nav-links a {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--muted);
     text-decoration: none;
     letter-spacing: 0.08em;
@@ -94,24 +91,20 @@
 
   .hero-glow {
     position: absolute;
-    width: 600px;
-    height: 600px;
+    width: 600px; height: 600px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(110, 240, 200, 0.08) 0%, transparent 70%);
-    top: 50%;
-    right: -100px;
+    top: 50%; right: -100px;
     transform: translateY(-50%);
     pointer-events: none;
   }
 
   .hero-glow2 {
     position: absolute;
-    width: 400px;
-    height: 400px;
+    width: 400px; height: 400px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(167, 139, 250, 0.06) 0%, transparent 70%);
-    bottom: 0;
-    left: 20%;
+    bottom: 0; left: 20%;
     pointer-events: none;
   }
 
@@ -136,17 +129,13 @@
 
   .hero-tag::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     background: var(--accent);
     border-radius: 50%;
     animation: pulse 2s infinite;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
   .hero h1 {
     font-size: clamp(3.5rem, 8vw, 7rem);
@@ -192,6 +181,7 @@
     text-decoration: none;
     border-radius: 2px;
     transition: all 0.2s;
+    display: inline-block;
   }
 
   .btn-primary:hover {
@@ -210,6 +200,7 @@
     text-decoration: none;
     border-radius: 2px;
     transition: all 0.2s;
+    display: inline-block;
   }
 
   .btn-secondary:hover {
@@ -218,11 +209,9 @@
     transform: translateY(-2px);
   }
 
-  /* GRID DECORATION */
   .hero-grid {
     position: absolute;
-    right: 3rem;
-    top: 50%;
+    right: 3rem; top: 50%;
     transform: translateY(-50%);
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -232,8 +221,7 @@
   }
 
   .hero-grid-dot {
-    width: 4px;
-    height: 4px;
+    width: 4px; height: 4px;
     background: var(--accent);
     border-radius: 50%;
   }
@@ -274,7 +262,7 @@
     line-height: 1.1;
   }
 
-  /* BTS SECTION */
+  /* BTS */
   .bts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -294,10 +282,7 @@
 
   .bts-card:hover { background: #1a1a25; }
 
-  .bts-card-icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
+  .bts-card-icon { font-size: 2rem; margin-bottom: 1rem; }
 
   .bts-card h3 {
     font-size: 1.15rem;
@@ -345,17 +330,12 @@
     transition: transform 0.3s, border-color 0.3s;
   }
 
-  .option-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent2);
-  }
+  .option-card:hover { transform: translateY(-4px); border-color: var(--accent2); }
 
   .option-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 3px;
   }
 
@@ -412,10 +392,7 @@
     transition: border-color 0.3s, transform 0.3s;
   }
 
-  .skill-group:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-  }
+  .skill-group:hover { border-color: var(--accent); transform: translateY(-3px); }
 
   .skill-group-title {
     font-family: var(--font-mono);
@@ -435,15 +412,10 @@
     margin-bottom: 1rem;
   }
 
-  .skill-name {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text);
-  }
+  .skill-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
 
   .skill-bar-wrap {
-    width: 80px;
-    height: 3px;
+    width: 80px; height: 3px;
     background: var(--border);
     border-radius: 2px;
     overflow: hidden;
@@ -474,10 +446,284 @@
     transition: all 0.2s;
   }
 
-  .tag:hover {
-    border-color: var(--accent);
+  .tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(110, 240, 200, 0.05); }
+
+  /* ===== STAGES ===== */
+  .stages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .stage-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .stage-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+
+  .stage-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .stage-card.mayotte::before { background: linear-gradient(90deg, #38bdf8, var(--accent)); }
+  .stage-card.abbeville::before { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
+
+  .stage-location {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .stage-card.mayotte .stage-location { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+  .stage-card.abbeville .stage-location { background: rgba(167, 139, 250, 0.1); color: var(--accent2); }
+
+  .stage-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .stage-enterprise {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     color: var(--accent);
-    background: rgba(110, 240, 200, 0.05);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .stage-enterprise::before { content: '//'; opacity: 0.5; }
+
+  .stage-card p {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .stage-tasks {
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .stage-tasks li {
+    padding: 0.25rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .stage-tasks li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    font-size: 0.5rem;
+    top: 0.45rem;
+    color: var(--accent);
+  }
+
+  .stage-map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: #38bdf8;
+    text-decoration: none;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 0.4rem 0.9rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .stage-map-link:hover {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: #38bdf8;
+    transform: translateY(-1px);
+  }
+
+  .stage-map-link svg { width: 14px; height: 14px; }
+
+  /* ===== VEILLE ===== */
+  .veille-intro {
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 700px;
+    margin-bottom: 2.5rem;
+  }
+
+  .veille-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .veille-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .veille-card:hover { transform: translateY(-4px); border-color: var(--accent3); }
+
+  .veille-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent3), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .veille-card:hover::after { opacity: 1; }
+
+  .veille-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .veille-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+
+  .veille-card p {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .veille-big-card {
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.06) 0%, rgba(167, 139, 250, 0.06) 100%);
+    border: 1px solid rgba(244, 114, 182, 0.2);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .veille-big-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent3), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .veille-big-card p {
+    font-family: var(--font-mono);
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .veille-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .veille-pill {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(244, 114, 182, 0.3);
+    border-radius: 20px;
+    color: var(--accent3);
+    background: rgba(244, 114, 182, 0.05);
+  }
+
+  /* ===== TP / MISSIONS ===== */
+  .tp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .tp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .tp-card:hover { transform: translateY(-4px); border-color: var(--accent2); }
+
+  .tp-number {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    opacity: 0.7;
+  }
+
+  .tp-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .tp-card p {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .tp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tp-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 2px;
+    color: var(--accent2);
+    background: rgba(167, 139, 250, 0.05);
   }
 
   /* CONTACT */
@@ -520,7 +766,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 100%;
   }
 
   footer p {
@@ -529,9 +774,7 @@
     color: var(--muted);
   }
 
-  .footer-accent {
-    color: var(--accent);
-  }
+  .footer-accent { color: var(--accent); }
 
   /* DIVIDER */
   .divider {
@@ -542,20 +785,9 @@
   }
 
   /* ANIMATIONS */
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 0.15; }
-  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 0.15; } }
 
   .reveal {
     opacity: 0;
@@ -563,25 +795,24 @@
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
-    .nav-links { gap: 1.5rem; }
+    .nav-links { gap: 1rem; }
     section { padding: 4rem 1.5rem; }
     .hero { padding: 7rem 1.5rem 4rem; }
     .bts-grid { grid-template-columns: 1fr; }
     .bts-card.featured { grid-column: 1; }
     .options-row { grid-template-columns: 1fr; }
     .skills-container { grid-template-columns: 1fr; }
+    .stages-grid { grid-template-columns: 1fr; }
+    .veille-grid { grid-template-columns: 1fr; }
+    .tp-grid { grid-template-columns: 1fr; }
     .hero-grid { display: none; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
   }
@@ -593,6 +824,9 @@
   <div class="nav-logo">loann.dev</div>
   <ul class="nav-links">
     <li><a href="#bts">BTS SIO</a></li>
+    <li><a href="#stages">Stages</a></li>
+    <li><a href="#veille">Veille IA</a></li>
+    <li><a href="#tp">Missions TP</a></li>
     <li><a href="#competences">Compétences</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -607,7 +841,7 @@
     <h1>Bonjour,<br>je suis <span class="name-accent">Loann</span></h1>
     <p class="hero-desc">Étudiant en BTS Services Informatiques aux Organisations, passionné par le développement web et les solutions numériques.</p>
     <div class="hero-cta">
-      <a href="#competences" class="btn-primary">Voir mes compétences</a>
+      <a href="#stages" class="btn-primary">Mes stages</a>
       <a href="#contact" class="btn-secondary">Me contacter</a>
     </div>
   </div>
@@ -669,6 +903,222 @@
 
 <div class="divider"></div>
 
+<!-- STAGES -->
+<section id="stages">
+  <div class="section-label reveal">Expérience</div>
+  <h2 class="section-title reveal">Mes stages<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Expériences professionnelles</span></h2>
+
+  <div class="stages-grid reveal">
+
+    <!-- Stage Mayotte -->
+    <div class="stage-card mayotte">
+      <div class="stage-location">🌊 Mayotte — Océan Indien</div>
+      <h3>Stage 1 — DEALM</h3>
+      <div class="stage-enterprise">Direction de l'Environnement, de l'Aménagement et du Logement de Mayotte</div>
+      <p>Stage effectué au sein de la DEALM, service déconcentré de l'État à Mayotte, en charge de l'environnement, de l'urbanisme et du logement sur le territoire mahorais.</p>
+      <ul class="stage-tasks">
+        <li>Support informatique et assistance aux utilisateurs</li>
+        <li>Maintenance du parc informatique</li>
+        <li>Gestion du réseau et de l'infrastructure</li>
+        <li>Paramétrage des postes de travail</li>
+        <li>Participation aux projets de modernisation SI</li>
+      </ul>
+      <a href="https://maps.google.com/?q=DEALM+Mayotte+Direction+Environnement+Aménagement+Logement" target="_blank" rel="noopener" class="stage-map-link">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        Voir sur Google Maps
+      </a>
+    </div>
+
+    <!-- Stage Abbeville -->
+    <div class="stage-card abbeville">
+      <div class="stage-location">🏙️ Abbeville — Hauts-de-France</div>
+      <h3>Stage 2 — Devisse Informatique</h3>
+      <div class="stage-enterprise">Devisse Informatique — Abbeville (80)</div>
+      <p>Stage réalisé chez Devisse Informatique, société spécialisée dans les services informatiques aux entreprises et particuliers de la région abbevilloise.</p>
+      <ul class="stage-tasks">
+        <li>Diagnostic et réparation de matériel informatique</li>
+        <li>Installation et configuration de systèmes</li>
+        <li>Déploiement de solutions réseau</li>
+        <li>Relation client et support technique</li>
+        <li>Mise en place de sauvegardes et sécurisation des données</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VEILLE TECHNOLOGIQUE -->
+<section id="veille">
+  <div class="section-label reveal">Veille Technologique</div>
+  <h2 class="section-title reveal">IA dans la médecine<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Intelligence Artificielle & Santé</span></h2>
+
+  <p class="veille-intro reveal">L'intelligence artificielle révolutionne le secteur de la santé à une vitesse sans précédent. Des algorithmes de diagnostic au suivi personnalisé des patients, l'IA s'impose comme un outil incontournable pour les professionnels de santé du XXIe siècle.</p>
+
+  <div class="veille-grid reveal">
+    <div class="veille-card">
+      <span class="veille-icon">🔬</span>
+      <h3>Diagnostic médical</h3>
+      <p>Les modèles de deep learning permettent d'analyser des images médicales (IRM, scanners, radiographies) avec une précision parfois supérieure à celle des radiologues humains. Des outils comme Google DeepMind ont démontré des résultats remarquables dans la détection du cancer du sein.</p>
+    </div>
+    <div class="veille-card">
+      <span class="veille-icon">💊</span>
+      <h3>Découverte de médicaments</h3>
+      <p>L'IA accélère la recherche pharmaceutique en simulant l'interaction de molécules et en prédisant l'efficacité de nouveaux composés. AlphaFold de DeepMind a résolu le problème du repliement des protéines, ouvrant des perspectives inédites pour la conception de traitements.</p>
+    </div>
+    <div class="veille-card">
+      <span class="veille-icon">🤖</span>
+      <h3>Chirurgie assistée par IA</h3>
+      <p>Les robots chirurgicaux intégrant l'IA (comme le Da Vinci) permettent des interventions ultra-précises. L'IA analyse en temps réel les gestes du chirurgien et peut corriger les mouvements pour minimiser les erreurs.</p>
+    </div>
+    <div class="veille-card">
+      <span class="veille-icon">📊</span>
+      <h3>Médecine prédictive</h3>
+      <p>En analysant des millions de dossiers médicaux, l'IA peut prédire l'apparition de maladies avant même que les symptômes ne se manifestent, permettant une prise en charge préventive et personnalisée.</p>
+    </div>
+    <div class="veille-card">
+      <span class="veille-icon">🧬</span>
+      <h3>Génomique & IA</h3>
+      <p>L'IA analyse les données génomiques à grande échelle pour identifier des marqueurs de maladies rares ou héréditaires, ouvrant la voie à une médecine véritablement personnalisée basée sur le profil génétique du patient.</p>
+    </div>
+    <div class="veille-card">
+      <span class="veille-icon">🏥</span>
+      <h3>Gestion hospitalière</h3>
+      <p>Les systèmes d'IA optimisent la gestion des lits, prédisent les flux de patients aux urgences, et automatisent les tâches administratives afin de libérer du temps médical et réduire les coûts opérationnels.</p>
+    </div>
+  </div>
+
+  <div class="veille-big-card reveal">
+    <h3>🔍 Enjeux éthiques et défis</h3>
+    <p>L'intégration de l'IA en médecine soulève des questions fondamentales : confidentialité des données de santé, responsabilité en cas d'erreur de diagnostic, biais algorithmiques dans les populations sous-représentées, et risque de déshumanisation de la relation médecin-patient.</p>
+    <p>En France, la CNIL encadre strictement l'utilisation des données de santé, et les algorithmes médicaux sont soumis à la réglementation européenne sur les dispositifs médicaux (MDR) avant toute mise sur le marché.</p>
+    <div class="veille-pills">
+      <span class="veille-pill">Machine Learning</span>
+      <span class="veille-pill">Deep Learning</span>
+      <span class="veille-pill">NLP Médical</span>
+      <span class="veille-pill">Computer Vision</span>
+      <span class="veille-pill">RGPD Santé</span>
+      <span class="veille-pill">AlphaFold</span>
+      <span class="veille-pill">Télémédecine</span>
+      <span class="veille-pill">Biomarqueurs IA</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MISSIONS TP -->
+<section id="tp">
+  <div class="section-label reveal">Travaux Pratiques</div>
+  <h2 class="section-title reveal">Missions & TP<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Réalisations tout au long de l'année</span></h2>
+
+  <div class="tp-grid reveal">
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 01</div>
+      <h3>Installation et configuration d'un serveur Linux</h3>
+      <p>Déploiement d'un serveur Debian en machine virtuelle, configuration des services réseau (SSH, FTP, Apache), mise en place des règles de pare-feu avec iptables et gestion des utilisateurs.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">Debian</span>
+        <span class="tp-tag">Apache</span>
+        <span class="tp-tag">SSH</span>
+        <span class="tp-tag">iptables</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 02</div>
+      <h3>Mise en place d'un réseau local (LAN)</h3>
+      <p>Conception et câblage d'une infrastructure réseau locale avec routage inter-VLAN, configuration de switches managés Cisco et implémentation du protocole DHCP et DNS.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">Cisco</span>
+        <span class="tp-tag">VLAN</span>
+        <span class="tp-tag">DHCP</span>
+        <span class="tp-tag">DNS</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 03</div>
+      <h3>Virtualisation avec VirtualBox / VMware</h3>
+      <p>Création et gestion d'environnements virtualisés multi-OS. Snapshot, clonage, réseaux NAT/bridge, et déploiement de services en environnement isolé pour tests et développement.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">VirtualBox</span>
+        <span class="tp-tag">VMware</span>
+        <span class="tp-tag">Windows Server</span>
+        <span class="tp-tag">Linux</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 04</div>
+      <h3>Développement d'une application web</h3>
+      <p>Conception et développement d'une application web dynamique avec PHP et MySQL. Gestion des sessions utilisateurs, formulaires sécurisés, et interface responsive avec HTML/CSS/JS.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">PHP</span>
+        <span class="tp-tag">MySQL</span>
+        <span class="tp-tag">HTML/CSS</span>
+        <span class="tp-tag">JavaScript</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 05</div>
+      <h3>Active Directory & GPO sous Windows Server</h3>
+      <p>Déploiement d'un domaine Active Directory, création d'unités organisationnelles, gestion des comptes utilisateurs et déploiement de stratégies de groupe (GPO) pour sécuriser les postes clients.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">Windows Server</span>
+        <span class="tp-tag">Active Directory</span>
+        <span class="tp-tag">GPO</span>
+        <span class="tp-tag">LDAP</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 06</div>
+      <h3>Sauvegarde & Plan de reprise d'activité</h3>
+      <p>Mise en œuvre d'une politique de sauvegarde avec des outils comme Veeam et rsync. Élaboration d'un PRA (Plan de Reprise d'Activité) et tests de restauration pour garantir la continuité de service.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">Veeam</span>
+        <span class="tp-tag">rsync</span>
+        <span class="tp-tag">PRA/PCA</span>
+        <span class="tp-tag">Sauvegarde</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 07</div>
+      <h3>Cybersécurité & Audit de vulnérabilités</h3>
+      <p>Réalisation d'un audit de sécurité avec Nmap et Nessus sur un réseau de test. Identification des vulnérabilités, rédaction d'un rapport de sécurité et proposition de mesures correctives.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">Nmap</span>
+        <span class="tp-tag">Nessus</span>
+        <span class="tp-tag">Wireshark</span>
+        <span class="tp-tag">Audit sécu</span>
+      </div>
+    </div>
+
+    <div class="tp-card">
+      <div class="tp-number">TP · 08</div>
+      <h3>Base de données — Modélisation & SQL</h3>
+      <p>Conception d'un modèle de données (MCD/MLD), création de bases de données relationnelles sous MySQL, rédaction de requêtes complexes (jointures, sous-requêtes, agrégation) et optimisation des performances.</p>
+      <div class="tp-tags">
+        <span class="tp-tag">MySQL</span>
+        <span class="tp-tag">MCD/MLD</span>
+        <span class="tp-tag">SQL avancé</span>
+        <span class="tp-tag">Merise</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- COMPETENCES -->
 <section id="competences">
   <div class="section-label reveal">Expertise</div>
@@ -694,7 +1144,6 @@
         <div class="skill-bar-wrap"><div class="skill-bar" style="width: 80%"></div></div>
       </div>
     </div>
-
     <div class="skill-group">
       <div class="skill-group-title">Données & Backend</div>
       <div class="skill-item">
@@ -714,7 +1163,6 @@
         <div class="skill-bar-wrap"><div class="skill-bar" style="width: 60%"></div></div>
       </div>
     </div>
-
     <div class="skill-group">
       <div class="skill-group-title">Outils & Méthodes</div>
       <div class="skill-item">
@@ -752,6 +1200,9 @@
     <span class="tag">MySQL</span>
     <span class="tag">API REST</span>
     <span class="tag">Agile / Scrum</span>
+    <span class="tag">Active Directory</span>
+    <span class="tag">Windows Server</span>
+    <span class="tag">Cisco</span>
   </div>
 </section>
 
@@ -763,7 +1214,7 @@
   <div class="contact-wrap reveal">
     <h3>Travaillons ensemble 🚀</h3>
     <p>Disponible pour des stages, alternances ou projets collaboratifs.</p>
-    <a href="mailto:loann@email.com" class="btn-primary">M'envoyer un email</a>
+    <a href="mailto:loann@example.com" class="btn-primary">M'envoyer un email</a>
   </div>
 </section>
 
@@ -778,12 +1229,13 @@
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.08 });
+
   reveals.forEach(el => observer.observe(el));
 </script>
-
 </body>
 </html>
