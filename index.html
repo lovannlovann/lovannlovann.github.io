@@ -7,15 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --card: #16161f;
-    --border: #2a2a3a;
+    --bg: #080810;
+    --surface: #0e0e18;
+    --card: #13131e;
+    --card-hover: #181825;
+    --border: #232336;
+    --border-light: #2e2e48;
     --accent: #6ef0c8;
     --accent2: #a78bfa;
     --accent3: #f472b6;
-    --text: #e8e8f0;
-    --muted: #8888aa;
+    --accent-dim: rgba(110, 240, 200, 0.12);
+    --text: #eaeaf5;
+    --muted: #7878a0;
     --font-display: 'Syne', sans-serif;
     --font-mono: 'DM Mono', monospace;
   }
@@ -28,16 +31,57 @@
     color: var(--text);
     font-family: var(--font-display);
     overflow-x: hidden;
+    cursor: none;
   }
 
+  /* NOISE OVERLAY */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(110, 240, 200, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transition: width 0.3s, height 0.3s, border-color 0.3s, transform 0.08s ease;
+  }
+
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 56px; height: 56px;
+    border-color: rgba(110, 240, 200, 0.7);
+  }
+
+  /* SCROLL PROGRESS */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    z-index: 200;
+    width: 0%;
+    transition: width 0.1s linear;
   }
 
   /* NAV */
@@ -49,9 +93,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 3rem;
-    background: rgba(10, 10, 15, 0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
+    background: rgba(8, 8, 16, 0.8);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(35, 35, 54, 0.6);
+    transition: padding 0.3s, background 0.3s;
+  }
+
+  nav.scrolled {
+    padding: 1rem 3rem;
+    background: rgba(8, 8, 16, 0.95);
   }
 
   .nav-logo {
@@ -59,7 +109,15 @@
     font-size: 0.85rem;
     color: var(--accent);
     letter-spacing: 0.1em;
+    position: relative;
   }
+
+  .nav-logo::after {
+    content: '_';
+    animation: blink 1.2s step-end infinite;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
   .nav-links {
     display: flex;
@@ -75,9 +133,21 @@
     text-decoration: none;
     letter-spacing: 0.08em;
     transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
   }
 
   .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
 
   /* HERO */
   .hero {
@@ -89,26 +159,45 @@
     overflow: hidden;
   }
 
+  /* Animated bg grid */
+  .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(110, 240, 200, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(110, 240, 200, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    pointer-events: none;
+  }
+
   .hero-glow {
     position: absolute;
-    width: 600px; height: 600px;
+    width: 700px; height: 700px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(110, 240, 200, 0.08) 0%, transparent 70%);
-    top: 50%; right: -100px;
+    background: radial-gradient(circle, rgba(110, 240, 200, 0.07) 0%, transparent 65%);
+    top: 50%; right: -150px;
     transform: translateY(-50%);
     pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
   }
 
   .hero-glow2 {
     position: absolute;
-    width: 400px; height: 400px;
+    width: 500px; height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(167, 139, 250, 0.06) 0%, transparent 70%);
-    bottom: 0; left: 20%;
+    background: radial-gradient(circle, rgba(167, 139, 250, 0.06) 0%, transparent 65%);
+    bottom: -100px; left: 15%;
     pointer-events: none;
+    animation: breathe 8s ease-in-out infinite reverse;
   }
 
-  .hero-content { max-width: 700px; position: relative; z-index: 2; }
+  @keyframes breathe {
+    0%, 100% { transform: translateY(-50%) scale(1); opacity: 1; }
+    50% { transform: translateY(-50%) scale(1.1); opacity: 0.7; }
+  }
+
+  .hero-content { max-width: 720px; position: relative; z-index: 2; }
 
   .hero-tag {
     display: inline-flex;
@@ -121,21 +210,21 @@
     text-transform: uppercase;
     margin-bottom: 1.5rem;
     padding: 0.4rem 1rem;
-    border: 1px solid rgba(110, 240, 200, 0.3);
+    border: 1px solid rgba(110, 240, 200, 0.25);
     border-radius: 2px;
-    background: rgba(110, 240, 200, 0.05);
+    background: rgba(110, 240, 200, 0.04);
     animation: fadeInDown 0.8s ease both;
   }
 
-  .hero-tag::before {
-    content: '';
+  .hero-tag-dot {
     width: 6px; height: 6px;
     background: var(--accent);
     border-radius: 50%;
     animation: pulse 2s infinite;
+    flex-shrink: 0;
   }
 
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(110,240,200,0.4); } 50% { opacity: 0.5; box-shadow: 0 0 0 6px rgba(110,240,200,0); } }
 
   .hero h1 {
     font-size: clamp(3.5rem, 8vw, 7rem);
@@ -151,6 +240,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    position: relative;
   }
 
   .hero-desc {
@@ -161,6 +251,22 @@
     max-width: 480px;
     margin-bottom: 2.5rem;
     animation: fadeInUp 0.8s ease 0.4s both;
+  }
+
+  /* Typewriter line */
+  .hero-typewriter {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent2);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease 0.35s both;
+    min-height: 1.5em;
+  }
+
+  .hero-typewriter::after {
+    content: '|';
+    animation: blink 0.8s step-end infinite;
+    color: var(--accent);
   }
 
   .hero-cta {
@@ -180,18 +286,32 @@
     letter-spacing: 0.05em;
     text-decoration: none;
     border-radius: 2px;
-    transition: all 0.2s;
+    transition: all 0.25s;
     display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    opacity: 0;
+    transition: opacity 0.3s;
   }
 
   .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(110, 240, 200, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(110, 240, 200, 0.35);
   }
+
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary span { position: relative; z-index: 1; }
 
   .btn-secondary {
     padding: 0.9rem 2rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-light);
     color: var(--text);
     font-family: var(--font-display);
     font-weight: 600;
@@ -199,45 +319,88 @@
     letter-spacing: 0.05em;
     text-decoration: none;
     border-radius: 2px;
-    transition: all 0.2s;
+    transition: all 0.25s;
     display: inline-block;
+    backdrop-filter: blur(8px);
   }
 
   .btn-secondary:hover {
     border-color: var(--accent);
     color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    background: rgba(110, 240, 200, 0.04);
   }
 
+  /* Hero floating dots */
   .hero-grid {
     position: absolute;
     right: 3rem; top: 50%;
     transform: translateY(-50%);
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    opacity: 0.15;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
     animation: fadeIn 1.5s ease 0.8s both;
   }
 
   .hero-grid-dot {
-    width: 4px; height: 4px;
+    width: 3px; height: 3px;
     background: var(--accent);
     border-radius: 50%;
+    opacity: 0.2;
+    animation: dotPulse var(--d, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @keyframes dotPulse { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.5; } }
+
+  /* SCROLL INDICATOR */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeInUp 1s ease 1.2s both;
+    z-index: 2;
+  }
+
+  .scroll-indicator span {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollDown {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
   }
 
   /* SECTIONS */
   section {
-    padding: 6rem 3rem;
+    padding: 7rem 3rem;
     max-width: 1100px;
     margin: 0 auto;
   }
 
   .section-label {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--accent);
-    letter-spacing: 0.2em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     margin-bottom: 0.75rem;
     display: flex;
@@ -245,31 +408,46 @@
     gap: 0.75rem;
   }
 
+  .section-label::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
   .section-label::after {
     content: '';
     flex: 1;
-    max-width: 60px;
+    max-width: 40px;
     height: 1px;
     background: var(--accent);
-    opacity: 0.4;
+    opacity: 0.3;
   }
 
   .section-title {
     font-size: clamp(2rem, 4vw, 3.2rem);
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     margin-bottom: 3rem;
     line-height: 1.1;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: calc(100% - 6rem);
+    margin: 0 3rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
   }
 
   /* BTS */
   .bts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5px;
+    gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     overflow: hidden;
     margin-bottom: 2rem;
   }
@@ -278,9 +456,10 @@
     background: var(--card);
     padding: 2.5rem;
     transition: background 0.3s;
+    position: relative;
   }
 
-  .bts-card:hover { background: #1a1a25; }
+  .bts-card:hover { background: var(--card-hover); }
 
   .bts-card-icon { font-size: 2rem; margin-bottom: 1rem; }
 
@@ -295,13 +474,12 @@
     font-family: var(--font-mono);
     font-size: 0.82rem;
     color: var(--muted);
-    line-height: 1.75;
+    line-height: 1.8;
   }
 
   .bts-card.featured {
     grid-column: 1 / -1;
-    background: linear-gradient(135deg, rgba(110, 240, 200, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(110, 240, 200, 0.04) 0%, rgba(167, 139, 250, 0.04) 100%);
   }
 
   .bts-card.featured h3 {
@@ -322,21 +500,25 @@
 
   .option-card {
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 2rem;
     background: var(--card);
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s, border-color 0.3s;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
   }
 
-  .option-card:hover { transform: translateY(-4px); border-color: var(--accent2); }
+  .option-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
 
   .option-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 2px;
   }
 
   .option-card.slam::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
@@ -368,14 +550,20 @@
     padding: 0.3rem 0;
     padding-left: 1.2rem;
     position: relative;
+    transition: color 0.2s;
   }
+
+  .option-list li:hover { color: var(--text); }
 
   .option-list li::before {
     content: '→';
     position: absolute;
     left: 0;
     color: var(--accent);
+    transition: transform 0.2s;
   }
+
+  .option-list li:hover::before { transform: translateX(3px); }
 
   /* SKILLS */
   .skills-container {
@@ -387,68 +575,91 @@
   .skill-group {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 2rem;
-    transition: border-color 0.3s, transform 0.3s;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
   }
 
-  .skill-group:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .skill-group:hover {
+    border-color: rgba(110, 240, 200, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(110, 240, 200, 0.05);
+  }
 
   .skill-group-title {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--accent);
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--border);
   }
 
   .skill-item {
+    margin-bottom: 1.1rem;
+  }
+
+  .skill-item-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
   }
 
-  .skill-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .skill-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+
+  .skill-pct {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
 
   .skill-bar-wrap {
-    width: 80px; height: 3px;
+    width: 100%; height: 3px;
     background: var(--border);
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
   }
 
   .skill-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
-    transition: width 1s ease;
+    border-radius: 3px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  .skill-bar.animated { width: var(--target-width); }
 
   /* TAGS */
   .tags-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
   }
 
   .tag {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     padding: 0.35rem 0.85rem;
     border: 1px solid var(--border);
     border-radius: 2px;
     color: var(--muted);
     transition: all 0.2s;
+    cursor: default;
   }
 
-  .tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(110, 240, 200, 0.05); }
+  .tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(110, 240, 200, 0.05);
+    transform: translateY(-2px);
+  }
 
-  /* ===== STAGES ===== */
+  /* STAGES */
   .stages-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -458,24 +669,42 @@
   .stage-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 2rem;
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s, border-color 0.3s;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
   }
 
-  .stage-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .stage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
 
   .stage-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 2px;
   }
 
   .stage-card.mayotte::before { background: linear-gradient(90deg, #38bdf8, var(--accent)); }
   .stage-card.abbeville::before { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
+  .stage-card.mayotte:hover { border-color: #38bdf8; }
+  .stage-card.abbeville:hover { border-color: var(--accent2); }
+
+  /* Glint effect on hover */
+  .stage-card::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -60%;
+    width: 60%; height: 200%;
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.03), transparent);
+    transform: skewX(-15deg);
+    transition: left 0.5s ease;
+  }
+
+  .stage-card:hover::after { left: 120%; }
 
   .stage-location {
     font-family: var(--font-mono);
@@ -526,17 +755,20 @@
   }
 
   .stage-tasks li {
-    padding: 0.25rem 0;
+    padding: 0.28rem 0;
     padding-left: 1.2rem;
     position: relative;
+    transition: color 0.2s;
   }
+
+  .stage-tasks li:hover { color: var(--text); }
 
   .stage-tasks li::before {
     content: '◆';
     position: absolute;
     left: 0;
     font-size: 0.5rem;
-    top: 0.45rem;
+    top: 0.5rem;
     color: var(--accent);
   }
 
@@ -548,7 +780,7 @@
     font-size: 0.75rem;
     color: #38bdf8;
     text-decoration: none;
-    border: 1px solid rgba(56, 189, 248, 0.3);
+    border: 1px solid rgba(56, 189, 248, 0.25);
     padding: 0.4rem 0.9rem;
     border-radius: 2px;
     transition: all 0.2s;
@@ -557,18 +789,18 @@
   .stage-map-link:hover {
     background: rgba(56, 189, 248, 0.08);
     border-color: #38bdf8;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
 
   .stage-map-link svg { width: 14px; height: 14px; }
 
-  /* ===== VEILLE ===== */
+  /* VEILLE */
   .veille-intro {
     font-family: var(--font-mono);
     font-size: 0.88rem;
     color: var(--muted);
-    line-height: 1.8;
-    max-width: 700px;
+    line-height: 1.9;
+    max-width: 720px;
     margin-bottom: 2.5rem;
   }
 
@@ -582,14 +814,14 @@
   .veille-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 1.75rem;
     position: relative;
     overflow: hidden;
     transition: transform 0.3s, border-color 0.3s;
   }
 
-  .veille-card:hover { transform: translateY(-4px); border-color: var(--accent3); }
+  .veille-card:hover { transform: translateY(-5px); border-color: rgba(244, 114, 182, 0.4); }
 
   .veille-card::after {
     content: '';
@@ -603,11 +835,7 @@
 
   .veille-card:hover::after { opacity: 1; }
 
-  .veille-icon {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    display: block;
-  }
+  .veille-icon { font-size: 1.8rem; margin-bottom: 1rem; display: block; }
 
   .veille-card h3 {
     font-size: 1rem;
@@ -620,13 +848,13 @@
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.75;
   }
 
   .veille-big-card {
-    background: linear-gradient(135deg, rgba(244, 114, 182, 0.06) 0%, rgba(167, 139, 250, 0.06) 100%);
-    border: 1px solid rgba(244, 114, 182, 0.2);
-    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(244, 114, 182, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+    border: 1px solid rgba(244, 114, 182, 0.18);
+    border-radius: 6px;
     padding: 2.5rem;
     margin-top: 1.5rem;
   }
@@ -645,7 +873,7 @@
     font-family: var(--font-mono);
     font-size: 0.83rem;
     color: var(--muted);
-    line-height: 1.8;
+    line-height: 1.85;
     margin-bottom: 1rem;
   }
 
@@ -660,13 +888,20 @@
     font-family: var(--font-mono);
     font-size: 0.7rem;
     padding: 0.3rem 0.8rem;
-    border: 1px solid rgba(244, 114, 182, 0.3);
+    border: 1px solid rgba(244, 114, 182, 0.25);
     border-radius: 20px;
     color: var(--accent3);
-    background: rgba(244, 114, 182, 0.05);
+    background: rgba(244, 114, 182, 0.04);
+    transition: all 0.2s;
+    cursor: default;
   }
 
-  /* ===== TP / MISSIONS ===== */
+  .veille-pill:hover {
+    background: rgba(244, 114, 182, 0.1);
+    transform: translateY(-2px);
+  }
+
+  /* TP / MISSIONS */
   .tp-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -676,19 +911,23 @@
   .tp-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 1.75rem;
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s, border-color 0.3s;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
   }
 
-  .tp-card:hover { transform: translateY(-4px); border-color: var(--accent2); }
+  .tp-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(167, 139, 250, 0.4);
+    box-shadow: 0 16px 50px rgba(167, 139, 250, 0.07);
+  }
 
   .tp-number {
     font-family: var(--font-mono);
     font-size: 0.65rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     color: var(--accent2);
     text-transform: uppercase;
     margin-bottom: 0.6rem;
@@ -706,7 +945,7 @@
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.75;
     margin-bottom: 1rem;
   }
 
@@ -720,32 +959,43 @@
     font-family: var(--font-mono);
     font-size: 0.68rem;
     padding: 0.2rem 0.6rem;
-    border: 1px solid rgba(167, 139, 250, 0.25);
+    border: 1px solid rgba(167, 139, 250, 0.2);
     border-radius: 2px;
     color: var(--accent2);
-    background: rgba(167, 139, 250, 0.05);
+    background: rgba(167, 139, 250, 0.04);
+    transition: all 0.2s;
+  }
+
+  .tp-tag:hover {
+    background: rgba(167, 139, 250, 0.12);
+    border-color: rgba(167, 139, 250, 0.5);
   }
 
   /* CONTACT */
   .contact-wrap {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 3rem;
+    border-radius: 6px;
+    padding: 4rem 3rem;
     text-align: center;
     position: relative;
     overflow: hidden;
+    transition: border-color 0.3s;
   }
+
+  .contact-wrap:hover { border-color: rgba(110, 240, 200, 0.3); }
 
   .contact-wrap::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(110, 240, 200, 0.03) 0%, rgba(167, 139, 250, 0.03) 100%);
+    background:
+      radial-gradient(ellipse 60% 60% at 50% 120%, rgba(110, 240, 200, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(167, 139, 250, 0.04) 0%, transparent 60%);
   }
 
   .contact-wrap h3 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 800;
     margin-bottom: 1rem;
     position: relative;
@@ -755,7 +1005,15 @@
     font-family: var(--font-mono);
     color: var(--muted);
     font-size: 0.88rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
     position: relative;
   }
 
@@ -776,51 +1034,52 @@
 
   .footer-accent { color: var(--accent); }
 
-  /* DIVIDER */
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 0 3rem;
-  }
-
   /* ANIMATIONS */
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 0.15; } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
   .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transform: translateY(28px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
+  /* RESPONSIVE */
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
     .nav-links { gap: 1rem; }
     section { padding: 4rem 1.5rem; }
     .hero { padding: 7rem 1.5rem 4rem; }
-    .bts-grid { grid-template-columns: 1fr; }
+    .bts-grid, .options-row, .skills-container, .stages-grid, .veille-grid, .tp-grid { grid-template-columns: 1fr; }
     .bts-card.featured { grid-column: 1; }
-    .options-row { grid-template-columns: 1fr; }
-    .skills-container { grid-template-columns: 1fr; }
-    .stages-grid { grid-template-columns: 1fr; }
-    .veille-grid { grid-template-columns: 1fr; }
-    .tp-grid { grid-template-columns: 1fr; }
-    .hero-grid { display: none; }
+    .hero-grid, .hero-bg-grid { display: none; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .divider { width: calc(100% - 3rem); margin: 0 1.5rem; }
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+    .contact-wrap { padding: 2.5rem 1.5rem; }
   }
 </style>
 </head>
 <body>
 
-<nav>
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav id="mainNav">
   <div class="nav-logo">loann.dev</div>
   <ul class="nav-links">
     <li><a href="#bts">BTS SIO</a></li>
@@ -834,28 +1093,33 @@
 
 <!-- HERO -->
 <div class="hero">
+  <div class="hero-bg-grid"></div>
   <div class="hero-glow"></div>
   <div class="hero-glow2"></div>
   <div class="hero-content">
-    <div class="hero-tag">Étudiant BTS SIO · SISR</div>
+    <div class="hero-tag">
+      <span class="hero-tag-dot"></span>
+      Étudiant BTS SIO · SISR
+    </div>
     <h1>Bonjour,<br>je suis <span class="name-accent">Loann</span></h1>
-    <p class="hero-desc">Étudiant en BTS Services Informatiques aux Organisations, passionné par le développement web et les solutions numériques.</p>
+    <p class="hero-typewriter" id="typewriter"></p>
+    <p class="hero-desc">Étudiant en BTS Services Informatiques aux Organisations, passionné par le développement web, les réseaux et les solutions numériques.</p>
     <div class="hero-cta">
-      <a href="#stages" class="btn-primary">Mes stages</a>
+      <a href="#stages" class="btn-primary"><span>Mes stages</span></a>
       <a href="#contact" class="btn-secondary">Me contacter</a>
     </div>
   </div>
-  <div class="hero-grid">
-    <script>
-      document.currentScript.insertAdjacentHTML('afterend', Array(42).fill('<div class="hero-grid-dot"></div>').join(''));
-    </script>
+  <div class="hero-grid" id="heroGrid"></div>
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
   </div>
 </div>
 
 <!-- BTS SIO -->
 <section id="bts">
   <div class="section-label reveal">Formation</div>
-  <h2 class="section-title reveal">BTS SIO<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Services Informatiques aux Organisations</span></h2>
+  <h2 class="section-title reveal">BTS SIO<br><span style="color: var(--muted); font-weight: 400; font-size: 0.65em;">Services Informatiques aux Organisations</span></h2>
 
   <div class="bts-grid reveal">
     <div class="bts-card featured">
@@ -906,11 +1170,9 @@
 <!-- STAGES -->
 <section id="stages">
   <div class="section-label reveal">Expérience</div>
-  <h2 class="section-title reveal">Mes stages<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Expériences professionnelles</span></h2>
+  <h2 class="section-title reveal">Mes stages<br><span style="color: var(--muted); font-weight: 400; font-size: 0.65em;">Expériences professionnelles</span></h2>
 
   <div class="stages-grid reveal">
-
-    <!-- Stage Mayotte -->
     <div class="stage-card mayotte">
       <div class="stage-location">🌊 Mayotte — Océan Indien</div>
       <h3>Stage 1 — DEALM</h3>
@@ -923,7 +1185,7 @@
         <li>Paramétrage des postes de travail</li>
         <li>Participation aux projets de modernisation SI</li>
       </ul>
-      <a href="https://maps.google.com/?q=DEALM+Mayotte+Direction+Environnement+Aménagement+Logement" target="_blank" rel="noopener" class="stage-map-link">
+      <a href="https://maps.google.com/?q=DEALM+Mayotte" target="_blank" rel="noopener" class="stage-map-link">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -932,7 +1194,6 @@
       </a>
     </div>
 
-    <!-- Stage Abbeville -->
     <div class="stage-card abbeville">
       <div class="stage-location">🏙️ Abbeville — Hauts-de-France</div>
       <h3>Stage 2 — Devisse Informatique</h3>
@@ -946,7 +1207,6 @@
         <li>Mise en place de sauvegardes et sécurisation des données</li>
       </ul>
     </div>
-
   </div>
 </section>
 
@@ -955,7 +1215,7 @@
 <!-- VEILLE TECHNOLOGIQUE -->
 <section id="veille">
   <div class="section-label reveal">Veille Technologique</div>
-  <h2 class="section-title reveal">IA dans la médecine<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Intelligence Artificielle & Santé</span></h2>
+  <h2 class="section-title reveal">IA dans la médecine<br><span style="color: var(--muted); font-weight: 400; font-size: 0.65em;">Intelligence Artificielle & Santé</span></h2>
 
   <p class="veille-intro reveal">L'intelligence artificielle révolutionne le secteur de la santé à une vitesse sans précédent. Des algorithmes de diagnostic au suivi personnalisé des patients, l'IA s'impose comme un outil incontournable pour les professionnels de santé du XXIe siècle.</p>
 
@@ -1014,106 +1274,73 @@
 <!-- MISSIONS TP -->
 <section id="tp">
   <div class="section-label reveal">Travaux Pratiques</div>
-  <h2 class="section-title reveal">Missions & TP<br><span style="color: var(--muted); font-weight: 400; font-size: 0.7em;">Réalisations tout au long de l'année</span></h2>
+  <h2 class="section-title reveal">Missions & TP<br><span style="color: var(--muted); font-weight: 400; font-size: 0.65em;">Réalisations tout au long de l'année</span></h2>
 
   <div class="tp-grid reveal">
-
     <div class="tp-card">
       <div class="tp-number">TP · 01</div>
       <h3>Installation et configuration d'un serveur Linux</h3>
       <p>Déploiement d'un serveur Debian en machine virtuelle, configuration des services réseau (SSH, FTP, Apache), mise en place des règles de pare-feu avec iptables et gestion des utilisateurs.</p>
       <div class="tp-tags">
-        <span class="tp-tag">Debian</span>
-        <span class="tp-tag">Apache</span>
-        <span class="tp-tag">SSH</span>
-        <span class="tp-tag">iptables</span>
+        <span class="tp-tag">Debian</span><span class="tp-tag">Apache</span><span class="tp-tag">SSH</span><span class="tp-tag">iptables</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 02</div>
       <h3>Mise en place d'un réseau local (LAN)</h3>
-      <p>Conception et câblage d'une infrastructure réseau locale avec routage inter-VLAN, configuration de switches managés Cisco et implémentation du protocole DHCP et DNS.</p>
+      <p>Conception et câblage d'une infrastructure réseau locale avec routage inter-VLAN, configuration de switches managés Cisco et implémentation des protocoles DHCP et DNS.</p>
       <div class="tp-tags">
-        <span class="tp-tag">Cisco</span>
-        <span class="tp-tag">VLAN</span>
-        <span class="tp-tag">DHCP</span>
-        <span class="tp-tag">DNS</span>
+        <span class="tp-tag">Cisco</span><span class="tp-tag">VLAN</span><span class="tp-tag">DHCP</span><span class="tp-tag">DNS</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 03</div>
       <h3>Virtualisation avec VirtualBox / VMware</h3>
       <p>Création et gestion d'environnements virtualisés multi-OS. Snapshot, clonage, réseaux NAT/bridge, et déploiement de services en environnement isolé pour tests et développement.</p>
       <div class="tp-tags">
-        <span class="tp-tag">VirtualBox</span>
-        <span class="tp-tag">VMware</span>
-        <span class="tp-tag">Windows Server</span>
-        <span class="tp-tag">Linux</span>
+        <span class="tp-tag">VirtualBox</span><span class="tp-tag">VMware</span><span class="tp-tag">Windows Server</span><span class="tp-tag">Linux</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 04</div>
       <h3>Développement d'une application web</h3>
       <p>Conception et développement d'une application web dynamique avec PHP et MySQL. Gestion des sessions utilisateurs, formulaires sécurisés, et interface responsive avec HTML/CSS/JS.</p>
       <div class="tp-tags">
-        <span class="tp-tag">PHP</span>
-        <span class="tp-tag">MySQL</span>
-        <span class="tp-tag">HTML/CSS</span>
-        <span class="tp-tag">JavaScript</span>
+        <span class="tp-tag">PHP</span><span class="tp-tag">MySQL</span><span class="tp-tag">HTML/CSS</span><span class="tp-tag">JavaScript</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 05</div>
       <h3>Active Directory & GPO sous Windows Server</h3>
       <p>Déploiement d'un domaine Active Directory, création d'unités organisationnelles, gestion des comptes utilisateurs et déploiement de stratégies de groupe (GPO) pour sécuriser les postes clients.</p>
       <div class="tp-tags">
-        <span class="tp-tag">Windows Server</span>
-        <span class="tp-tag">Active Directory</span>
-        <span class="tp-tag">GPO</span>
-        <span class="tp-tag">LDAP</span>
+        <span class="tp-tag">Windows Server</span><span class="tp-tag">Active Directory</span><span class="tp-tag">GPO</span><span class="tp-tag">LDAP</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 06</div>
       <h3>Sauvegarde & Plan de reprise d'activité</h3>
-      <p>Mise en œuvre d'une politique de sauvegarde avec des outils comme Veeam et rsync. Élaboration d'un PRA (Plan de Reprise d'Activité) et tests de restauration pour garantir la continuité de service.</p>
+      <p>Mise en œuvre d'une politique de sauvegarde avec Veeam et rsync. Élaboration d'un PRA et tests de restauration pour garantir la continuité de service.</p>
       <div class="tp-tags">
-        <span class="tp-tag">Veeam</span>
-        <span class="tp-tag">rsync</span>
-        <span class="tp-tag">PRA/PCA</span>
-        <span class="tp-tag">Sauvegarde</span>
+        <span class="tp-tag">Veeam</span><span class="tp-tag">rsync</span><span class="tp-tag">PRA/PCA</span><span class="tp-tag">Sauvegarde</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 07</div>
       <h3>Cybersécurité & Audit de vulnérabilités</h3>
       <p>Réalisation d'un audit de sécurité avec Nmap et Nessus sur un réseau de test. Identification des vulnérabilités, rédaction d'un rapport de sécurité et proposition de mesures correctives.</p>
       <div class="tp-tags">
-        <span class="tp-tag">Nmap</span>
-        <span class="tp-tag">Nessus</span>
-        <span class="tp-tag">Wireshark</span>
-        <span class="tp-tag">Audit sécu</span>
+        <span class="tp-tag">Nmap</span><span class="tp-tag">Nessus</span><span class="tp-tag">Wireshark</span><span class="tp-tag">Audit sécu</span>
       </div>
     </div>
-
     <div class="tp-card">
       <div class="tp-number">TP · 08</div>
       <h3>Base de données — Modélisation & SQL</h3>
       <p>Conception d'un modèle de données (MCD/MLD), création de bases de données relationnelles sous MySQL, rédaction de requêtes complexes (jointures, sous-requêtes, agrégation) et optimisation des performances.</p>
       <div class="tp-tags">
-        <span class="tp-tag">MySQL</span>
-        <span class="tp-tag">MCD/MLD</span>
-        <span class="tp-tag">SQL avancé</span>
-        <span class="tp-tag">Merise</span>
+        <span class="tp-tag">MySQL</span><span class="tp-tag">MCD/MLD</span><span class="tp-tag">SQL avancé</span><span class="tp-tag">Merise</span>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -1124,85 +1351,73 @@
   <div class="section-label reveal">Expertise</div>
   <h2 class="section-title reveal">Mes compétences</h2>
 
-  <div class="skills-container reveal">
+  <div class="skills-container reveal" id="skillsContainer">
     <div class="skill-group">
       <div class="skill-group-title">Développement Web</div>
       <div class="skill-item">
-        <span class="skill-name">HTML / CSS</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 90%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">HTML / CSS</span><span class="skill-pct">90%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 90%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">JavaScript</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 75%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">JavaScript</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 75%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">PHP</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 65%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">PHP</span><span class="skill-pct">65%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 65%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">WordPress</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 80%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">WordPress</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 80%"></div></div>
       </div>
     </div>
     <div class="skill-group">
       <div class="skill-group-title">Données & Backend</div>
       <div class="skill-item">
-        <span class="skill-name">SQL</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 80%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">SQL</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 80%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Python</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 70%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">Python</span><span class="skill-pct">70%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 70%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">MySQL</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 75%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">MySQL</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 75%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">API REST</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 60%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">API REST</span><span class="skill-pct">60%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 60%"></div></div>
       </div>
     </div>
     <div class="skill-group">
       <div class="skill-group-title">Outils & Méthodes</div>
       <div class="skill-item">
-        <span class="skill-name">Git / GitHub</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 75%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">Git / GitHub</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 75%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Linux</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 65%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">Linux</span><span class="skill-pct">65%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 65%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">VS Code</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 90%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">VS Code</span><span class="skill-pct">90%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 90%"></div></div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Méthode Agile</span>
-        <div class="skill-bar-wrap"><div class="skill-bar" style="width: 70%"></div></div>
+        <div class="skill-item-top"><span class="skill-name">Méthode Agile</span><span class="skill-pct">70%</span></div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="--target-width: 70%"></div></div>
       </div>
     </div>
   </div>
 
   <div class="tags-wrap reveal">
-    <span class="tag">HTML5</span>
-    <span class="tag">CSS3</span>
-    <span class="tag">JavaScript</span>
-    <span class="tag">PHP</span>
-    <span class="tag">Python</span>
-    <span class="tag">SQL</span>
-    <span class="tag">WordPress</span>
-    <span class="tag">Git</span>
-    <span class="tag">Linux</span>
-    <span class="tag">Réseaux</span>
-    <span class="tag">Cybersécurité</span>
-    <span class="tag">Virtualisation</span>
-    <span class="tag">MySQL</span>
-    <span class="tag">API REST</span>
-    <span class="tag">Agile / Scrum</span>
-    <span class="tag">Active Directory</span>
-    <span class="tag">Windows Server</span>
-    <span class="tag">Cisco</span>
+    <span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">JavaScript</span>
+    <span class="tag">PHP</span><span class="tag">Python</span><span class="tag">SQL</span>
+    <span class="tag">WordPress</span><span class="tag">Git</span><span class="tag">Linux</span>
+    <span class="tag">Réseaux</span><span class="tag">Cybersécurité</span><span class="tag">Virtualisation</span>
+    <span class="tag">MySQL</span><span class="tag">API REST</span><span class="tag">Agile / Scrum</span>
+    <span class="tag">Active Directory</span><span class="tag">Windows Server</span><span class="tag">Cisco</span>
   </div>
 </section>
 
@@ -1214,28 +1429,109 @@
   <div class="contact-wrap reveal">
     <h3>Travaillons ensemble 🚀</h3>
     <p>Disponible pour des stages, alternances ou projets collaboratifs.</p>
-    <a href="mailto:loann@example.com" class="btn-primary">M'envoyer un email</a>
+    <div class="contact-links">
+      <a href="mailto:contact@loann.dev" class="btn-primary"><span>M'envoyer un email</span></a>
+      <a href="https://github.com" target="_blank" rel="noopener" class="btn-secondary">GitHub →</a>
+    </div>
   </div>
 </section>
 
 <footer>
   <p>© 2026 <span class="footer-accent">Loann</span> — Portfolio BTS SIO</p>
-  <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);">Fait avec ❤️ & beaucoup de café</p>
+  <p>Fait avec ❤️ & beaucoup de café</p>
 </footer>
 
 <script>
-  // Scroll reveal
+  // --- CURSOR ---
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = (mx - 4) + 'px';
+    cursor.style.top = (my - 4) + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.15;
+    ry += (my - ry - 18) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // --- SCROLL PROGRESS ---
+  const progress = document.getElementById('scrollProgress');
+  const nav = document.getElementById('mainNav');
+
+  window.addEventListener('scroll', () => {
+    const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    progress.style.width = scrolled + '%';
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+
+  // --- HERO GRID DOTS ---
+  const grid = document.getElementById('heroGrid');
+  for (let i = 0; i < 49; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'hero-grid-dot';
+    dot.style.setProperty('--d', (2 + Math.random() * 4) + 's');
+    dot.style.setProperty('--delay', (Math.random() * 3) + 's');
+    grid.appendChild(dot);
+  }
+
+  // --- TYPEWRITER ---
+  const phrases = [
+    'Administrateur réseaux & systèmes',
+    'Passionné de cybersécurité',
+    'Développeur web en formation',
+    'Curieux des nouvelles technologies',
+  ];
+  let pi = 0, ci = 0, deleting = false;
+  const tw = document.getElementById('typewriter');
+
+  function typeLoop() {
+    const phrase = phrases[pi];
+    if (!deleting) {
+      tw.textContent = phrase.slice(0, ++ci);
+      if (ci === phrase.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
+    } else {
+      tw.textContent = phrase.slice(0, --ci);
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(typeLoop, 300); return; }
+    }
+    setTimeout(typeLoop, deleting ? 45 : 75);
+  }
+  setTimeout(typeLoop, 1200);
+
+  // --- SCROLL REVEAL ---
   const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
+  const revealObs = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
+        setTimeout(() => entry.target.classList.add('visible'), i * 90);
+        revealObs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.08 });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => revealObs.observe(el));
 
-  reveals.forEach(el => observer.observe(el));
+  // --- SKILL BARS ANIMATION ---
+  const skillsSection = document.getElementById('skillsContainer');
+  let barsAnimated = false;
+
+  const skillObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !barsAnimated) {
+      barsAnimated = true;
+      document.querySelectorAll('.skill-bar').forEach((bar, i) => {
+        setTimeout(() => bar.classList.add('animated'), i * 80);
+      });
+      skillObs.disconnect();
+    }
+  }, { threshold: 0.3 });
+
+  skillObs.observe(skillsSection);
 </script>
 </body>
 </html>
